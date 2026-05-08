@@ -18,6 +18,7 @@ export default {
     home: 'Home',
     aiChat: 'AI Chat',
     sessions: 'Sessions',
+    documents: 'KowledgeBase',
     my: 'My'
   },
   home: {
@@ -76,5 +77,38 @@ export default {
     username: 'Username',
     bio: 'Bio',
     save: 'Save Changes'
+  },
+  documents: {
+    title: 'Knowledge Base',
+    uploadTitle: 'Upload Documents',
+    uploadHint: 'Supports TXT, PDF, Markdown, DOCX formats',
+    selectFile: 'Select File',
+    formatHint: 'Supported: txt, pdf, md, docx, max 20MB per file',
+    maxFilesReached: 'Max {max} files at a time',
+    upload: 'Upload',
+    uploading: 'Uploading...',
+    pendingUpload: 'Pending',
+    historyTitle: 'Upload History',
+    noFiles: 'No upload history',
+    files: 'files',
+    uploadSuccess: 'Success',
+    uploadFailed: 'Failed',
+    uploadAllSuccess: 'All files uploaded',
+    uploadPartialSuccess: 'files uploaded',
+    uploadAllFailed: 'Upload failed, please try again',
+    invalidFormat: 'Unsupported file format',
+    fileTooLarge: 'File size must not exceed 20MB',
+    noPendingFiles: 'No pending files',
+    needLogin: 'Please login first',
+    cleanAll: 'Clear All Vectors',
+    cleanAllTitle: 'Confirm Clear',
+    cleanAllConfirm: 'Are you sure you want to clear all uploaded document vectors? This action cannot be undone.',
+    cleanAllSuccess: 'All vectors cleared',
+    cleanAllFailed: 'Clear failed, please try again',
+    storedTitle: 'Stored in Vector DB',
+    storedHint: '{count} chunks stored in vector database',
+    stored: 'Stored',
+    noStoredFiles: 'No documents in vector database',
+    refresh: 'Refresh'
   }
 };

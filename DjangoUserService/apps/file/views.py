@@ -8,6 +8,7 @@ from apps.user.models import User
 from apps.utils.cache_utils import clear_user_cache
 
 import os
+import traceback
 
 class UploadAPIView(APIView):
     """文件上传"""
@@ -33,15 +34,17 @@ class UploadAPIView(APIView):
             # 保存文件到media/img目录
             filepath = settings.MEDIA_ROOT / 'img' / filename
             try:
+                os.makedirs(os.path.dirname(filepath), exist_ok=True)
                 with open(filepath, 'wb') as f:
                     for chunk in img.chunks():
                         f.write(chunk)
             except Exception as e:
-                print(e)
+                print(f"文件写入失败: {filepath}, 错误: {e}")
+                traceback.print_exc()
                 return Response(
                  {
                      "errno": 1,
-                     "message": "图片上传失败"
+                     "message": f"图片上传失败: {e}"
                 }
                 )
             # 返回文件的URL

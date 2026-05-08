@@ -102,6 +102,16 @@ async def add_vector_multiple(
     return success_response(message=f"文件 {filenames} 已成功上传并存储到向量数据库")
 
 
+@chat_router.get("/vector/list")
+async def list_user_vectors(
+        user_id: str = Depends(get_current_user_id),
+        router_service: ChatService = Depends(get_router_service)
+):
+    """获取用户已上传的向量文档列表"""
+    result = await router_service.handle_list_user_vectors(user_id)
+    return success_response(data=result)
+
+
 @chat_router.delete("/vector/clean")
 async def clean_user_vectors(user_id: str = Depends(get_current_user_id), router_service: ChatService = Depends(get_router_service)):
     """删除用户上传的所有向量"""

@@ -16,42 +16,70 @@ load_dotenv()
 
 class DashScopeEmbeddingsWrapper(Embeddings):
     """阿里云DashScope嵌入模型封装"""
-    
-    def __init__(self, model_name: str = "qwen3-embedding", api_key: str = None):
+
+    # DashScope 有效嵌入模型名（与 Ollama 命名不同，不通用 qwen 前缀）
+    # 文档: https://help.aliyun.com/zh/model-studio/text-embedding
+    VALID_MODELS = {
+        'text-embedding-v1', 'text-embedding-v2',
+        'text-embedding-v3', 'text-embedding-async-v1', 'text-embedding-async-v2',
+    }
+
+    def __init__(self, model_name: str = "text-embedding-v3", api_key: str = None):
         try:
             import dashscope
             self.dashscope = dashscope
             self.dashscope.api_key = api_key or os.getenv("ALIYUN_ACCESS_KEY_SECRET")
-            self.model_name = model_name
+            # 如果配置的是 Ollama 风格模型名（如 qwen3-embedding），自动纠正为 DashScope 有效模型
+            if model_name not in self.VALID_MODELS:
+                logger.warning(
+                    f"⚠️ 嵌入模型名 '{model_name}' 非 DashScope 标准模型，使用默认 text-embedding-v3"
+                )
+                self.model_name = "text-embedding-v3"
+            else:
+                self.model_name = model_name
         except ImportError:
             raise ImportError("需要安装 dashscope 库: pip install dashscope")
-    
-    def embed_documents(self, texts: List[str]) -> List[List[float]]:
-        """批量嵌入文档"""
-        results = []
-        for text in texts:
-            resp = self.dashscope.TextEmbedding.call(
-                model=self.model_name,
-                input=text
-            )
-            if resp.status_code == 200:
-                results.append(resp.output['embedding'])
-            else:
-                logger.error(f"阿里云嵌入调用失败: {resp.message}")
-                results.append([])
-        return results
-    
-    def embed_query(self, text: str) -> List[float]:
-        """嵌入单个查询"""
+
+    def _call_api(self, text: str):
+        """调用 DashScope TextEmbedding API，返回 embedding 向量"""
         resp = self.dashscope.TextEmbedding.call(
             model=self.model_name,
             input=text
         )
         if resp.status_code == 200:
-            return resp.output['embedding']
+            # DashScope 响应格式: output.embeddings[0].embedding (注意复数)
+            embeddings = resp.output.get('embeddings', [])
+            if embeddings and 'embedding' in embeddings[0]:
+                return embeddings[0]['embedding']
+            logger.error(f"阿里云嵌入响应格式异常: {resp.output}")
+            return None
         else:
-            logger.error(f"阿里云嵌入调用失败: {resp.message}")
-            return []
+            logger.error(
+                f"阿里云嵌入调用失败: status={resp.status_code}, "
+                f"code={getattr(resp, 'code', 'N/A')}, "
+                f"message={getattr(resp, 'message', 'N/A')}"
+            )
+            return None
+
+    def embed_documents(self, texts: List[str]) -> List[List[float]]:
+        """批量嵌入文档"""
+        results = []
+        for i, text in enumerate(texts):
+            vec = self._call_api(text)
+            if vec is not None:
+                results.append(vec)
+            else:
+                logger.error(f"阿里云嵌入失败 (第{i+1}/{len(texts)}段文本, 长度={len(text)})")
+                results.append([])
+        return results
+
+    def embed_query(self, text: str) -> List[float]:
+        """嵌入单个查询"""
+        vec = self._call_api(text)
+        if vec is not None:
+            return vec
+        logger.error("阿里云查询嵌入失败，返回空向量")
+        return []
 
 
 class BaseModelFactory(ABC):

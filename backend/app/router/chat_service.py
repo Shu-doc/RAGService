@@ -142,6 +142,11 @@ class ChatService:
 
         return results
 
+    async def handle_list_user_vectors(self, user_id: str) -> dict:
+        """获取用户已上传的向量文档列表"""
+        store = VectorStoreService()
+        return await store.get_user_documents(user_id)
+
     async def clean_user_upload(self, user_id: str) -> None:
         """处理删除用户上传的所有向量逻辑"""
         # 创建向量数据库服务实例

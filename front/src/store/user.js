@@ -211,7 +211,7 @@ export const useUserStore = defineStore('user', {
         }
         
         // 发送更新密码请求
-        const response = await axios.post('/user/change_password/', {
+        const response = await axios.post('/user/reset-password/', {
           old_password: oldPassword,
           new_password: newPassword
         }, {

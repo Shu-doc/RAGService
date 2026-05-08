@@ -77,6 +77,15 @@ const routes = [
       keepAlive: true
     }
   },
+  {
+    path: '/documents',
+    name: 'Documents',
+    component: () => import('../views/Documents.vue'),
+    meta: {
+      title: '知识库',
+      keepAlive: true
+    }
+  },
 ]
 
 const router = createRouter({

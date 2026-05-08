@@ -38,6 +38,7 @@ export const apiConfig = {
     uploadSingleFile: '/api/vector/add/single',
     uploadMultipleFiles: '/api/vector/add/multiple',
     cleanVectors: '/api/vector/clean',
+    listUserVectors: '/api/vector/list',
     
     // 文档重排序
     reorderDocuments: '/api/reorder'

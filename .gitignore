@@ -94,3 +94,7 @@ ehthumbs_vista.db
 # Docker
 Dockerfile
 .dockerignore
+
+# Root-level config files (项目配置在各子目录中)
+/pyproject.toml
+/package-lock.json

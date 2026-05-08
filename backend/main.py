@@ -1,5 +1,12 @@
-import time
+import os
+from pathlib import Path
 from dotenv import load_dotenv
+
+# 必须在所有 app 导入之前加载环境变量，确保 factory.py 等模块能读取到正确的配置
+_env_path = Path(__file__).resolve().parent / '.env'
+load_dotenv(_env_path)
+
+import time
 
 from fastapi import FastAPI, Request
 from starlette.middleware.cors import CORSMiddleware
@@ -17,9 +24,6 @@ from app.core.rate_limit import RateLimitMiddleware
 from app.core.logger_handler import logger
 
 from app.rag.reorder_service import check_and_download_reranker_model
-
-# 加载环境变量
-load_dotenv()
 
 app = FastAPI()
 

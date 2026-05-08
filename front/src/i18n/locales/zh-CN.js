@@ -18,6 +18,7 @@ export default {
     home: '首页',
     aiChat: 'AI问答',
     sessions: '会话管理',
+    documents: '知识库',
     my: '我的'
   },
   home: {
@@ -76,5 +77,38 @@ export default {
     username: '用户名',
     bio: '个人简介',
     save: '保存修改'
+  },
+  documents: {
+    title: '知识库',
+    uploadTitle: '上传文档',
+    uploadHint: '支持上传TXT、PDF、Markdown、DOCX格式文件',
+    selectFile: '选择文件',
+    formatHint: '支持格式：txt、pdf、md、docx，单文件最大20MB',
+    maxFilesReached: '最多同时选择{max}个文件',
+    upload: '开始上传',
+    uploading: '上传中...',
+    pendingUpload: '等待上传',
+    historyTitle: '上传记录',
+    noFiles: '暂无上传记录',
+    files: '个文件',
+    uploadSuccess: '上传成功',
+    uploadFailed: '上传失败',
+    uploadAllSuccess: '全部上传成功',
+    uploadPartialSuccess: '个文件上传成功',
+    uploadAllFailed: '上传失败，请稍后重试',
+    invalidFormat: '不支持的文件格式',
+    fileTooLarge: '文件大小不能超过20MB',
+    noPendingFiles: '没有待上传的文件',
+    needLogin: '请先登录',
+    cleanAll: '清空全部向量',
+    cleanAllTitle: '清空确认',
+    cleanAllConfirm: '确定要清空所有已上传的文档向量吗？此操作不可撤销。',
+    cleanAllSuccess: '已清空全部向量',
+    cleanAllFailed: '清空失败，请稍后重试',
+    storedTitle: '向量库已存储',
+    storedHint: '共 {count} 个分块已存入向量数据库',
+    stored: '已入库',
+    noStoredFiles: '向量库中暂无文档',
+    refresh: '刷新'
   }
 };

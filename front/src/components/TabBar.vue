@@ -2,6 +2,7 @@
   <van-tabbar v-model="active" route>
     <van-tabbar-item to="/aichat" icon="chat-o">{{ $t('nav.aiChat') }}</van-tabbar-item>
     <van-tabbar-item to="/sessions" icon="comment-circle-o">{{ $t('nav.sessions') }}</van-tabbar-item>
+    <van-tabbar-item to="/documents" icon="bookmark-o">{{ $t('nav.documents') }}</van-tabbar-item>
     <van-tabbar-item to="/my" icon="user-o">{{ $t('nav.my') }}</van-tabbar-item>
   </van-tabbar>
 </template>
@@ -20,8 +21,10 @@ const setActiveTab = () => {
     active.value = 0
   } else if (path.includes('/sessions')) {
     active.value = 1
-  } else if (path.includes('/my')) {
+  } else if (path.includes('/documents')) {
     active.value = 2
+  } else if (path.includes('/my')) {
+    active.value = 3
   }
 }
 

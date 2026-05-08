@@ -36,6 +36,7 @@
 
     <div class="menu-list">
       <van-cell-group inset>
+        <van-cell :title="$t('nav.documents')" icon="file-text-o" is-link @click="goToDocuments" />
         <van-cell :title="$t('my.notifications')" is-link />
         <van-cell :title="$t('my.settings')" is-link @click="goToSettings" />
         <van-cell v-if="isLogin" :title="$t('my.logout')" @click="handleLogout" />
@@ -81,6 +82,11 @@ const goToProfile = () => {
 };
 
 
+
+// 跳转到知识库页面
+const goToDocuments = () => {
+  router.push('/documents');
+};
 
 // 跳转到设置页面
 const goToSettings = () => {

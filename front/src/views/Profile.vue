@@ -542,6 +542,7 @@ const showAvatarDialog = () => {
   // 使用ref创建响应式变量
   const selectedFile = ref(null);
   const previewUrl = ref(userInfo.value?.avatar ? `http://localhost:8001${userInfo.value.avatar}` : 'https://fastly.jsdelivr.net/npm/@vant/assets/cat.jpeg');
+  const token = localStorage.getItem('jwt_token') || userStore.token;
   
   showDialog({
     title: '修改头像',
@@ -583,41 +584,64 @@ const showAvatarDialog = () => {
       showToast('请选择要上传的图片');
       return;
     }
-    
+
+    // 前端预检：文件格式和大小，避免无效请求
+    const allowedFormats = ['image/jpeg', 'image/png', 'image/gif', 'image/jpg'];
+    if (!allowedFormats.includes(selectedFile.value.type)) {
+      showToast('仅支持 JPG、PNG、GIF 格式');
+      return;
+    }
+    if (selectedFile.value.size > 5 * 1024 * 1024) {
+      showToast('图片大小不能超过5MB');
+      return;
+    }
+
+    const loadingInstance = showLoadingToast({
+      message: '上传中...',
+      forbidClick: true,
+      duration: 0
+    });
+
     try {
-      // 显示加载提示
-      const loadingInstance = showLoadingToast({
-        message: '上传中...',
-        forbidClick: true,
-        duration: 0
-      });
-      
-      // 创建FormData对象
       const formData = new FormData();
       formData.append('img', selectedFile.value);
-      
-      // 发送上传请求
+
       const response = await axios.post(`${apiConfig.userBaseURL}${apiConfig.endpoints.uploadFile}`, formData, {
         headers: {
-          'Authorization': `Bearer ${userStore.token}`,
-          'Content-Type': 'multipart/form-data'
+          'Authorization': `Bearer ${token}`
         }
       });
-      
-      // 关闭加载提示
+
       loadingInstance.close();
-      
+      console.log('上传响应完整数据:', JSON.stringify(response.data));
+
       if (response.data && response.data.success) {
-        // 更新用户信息
         await userStore.getUserInfoDetail();
         showSuccessToast('头像上传成功');
+      } else if (response.data && response.data.errno !== undefined) {
+        // Django 错误格式: {errno: 1, message: "..."}
+        showFailToast(response.data.message || '头像上传失败');
       } else {
         showFailToast((response.data && response.data.message) || '头像上传失败');
       }
     } catch (error) {
-      console.error('上传头像失败:', error);
-      showToast.clear();
-      showToast.fail('头像上传失败');
+      loadingInstance.close();
+      console.log('头像上传错误:', error);
+      console.log('响应状态:', error.response?.status);
+      console.log('响应数据:', JSON.stringify(error.response?.data));
+      let msg = '头像上传失败';
+      if (error.response) {
+        const data = error.response.data;
+        if (data && typeof data === 'object') {
+          // 优先取 message 字段（Django 通用错误格式: {errno, message}）
+          msg = data.message || Object.values(data).flat().join('; ') || msg;
+        } else if (typeof data === 'string') {
+          msg = data;
+        }
+      } else if (error.request) {
+        msg = '网络连接失败，请检查服务是否启动';
+      }
+      showFailToast(msg);
     }
   }).catch(() => {
     // 点击取消按钮

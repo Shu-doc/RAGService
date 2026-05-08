@@ -177,6 +177,39 @@ class VectorStoreService:
         async with aiofiles.open(get_abstract_path(chroma_config['md5_hex_store']), 'a', encoding="utf-8") as f:
             await f.write(md5_hex + '\n')
 
+    async def get_user_documents(self, user_id: str) -> dict:
+        """
+        获取指定用户的上传文档摘要
+        :param user_id: 用户ID
+        :return: {filenames: [str], total_chunks: int}
+        """
+        try:
+            all_data = await asyncio.to_thread(
+                self.vectors_store.get,
+                where={"user_id": user_id},
+                include=['documents', 'metadatas']
+            )
+            if not all_data or not all_data.get('metadatas'):
+                return {"filenames": [], "total_chunks": 0}
+
+            # 从 metadatas 提取唯一文件名
+            filenames = []
+            for meta in all_data['metadatas']:
+                if meta and 'source' in meta:
+                    name = os.path.basename(meta['source'])
+                    if name not in filenames:
+                        filenames.append(name)
+
+            total_chunks = len(all_data.get('documents', []))
+            logger.info(
+                f"【向量数据库】查询用户 {user_id} 的文档: {len(filenames)} 个文件, {total_chunks} 个分块",
+                extra={"path": "VectorStoreService.get_user_documents"}
+            )
+            return {"filenames": filenames, "total_chunks": total_chunks}
+        except Exception as e:
+            logger.error(f"【向量数据库】查询用户 {user_id} 文档时出错: {e}")
+            return {"filenames": [], "total_chunks": 0}
+
     async def delete_user_documents(self, user_id: str):
         """
         删除指定用户的所有文档
@@ -220,14 +253,16 @@ class VectorStoreService:
             # 处理上传的文件
             for file in files:
                 # 创建临时文件，使用asyncio.to_thread 包裹
-                temp_file_path = await asyncio.to_thread(
+                tmp_file = await asyncio.to_thread(
                     tempfile.NamedTemporaryFile,
                     delete=False,
                     suffix=os.path.splitext(file.filename)[1]
                 )
                 content = await file.read()
-                await asyncio.to_thread(temp_file_path.write, content)
-                file_paths.append(temp_file_path.name)
+                await asyncio.to_thread(tmp_file.write, content)
+                # 关键：close 确保缓冲区数据刷入磁盘，否则后续加载器读到的文件为空
+                await asyncio.to_thread(tmp_file.close)
+                file_paths.append(tmp_file.name)
         else:
             # 从数据文件夹读取文件
             allowed_file_path: tuple[str] = await listdir_allowed_type(
