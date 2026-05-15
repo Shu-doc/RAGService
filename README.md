@@ -1,16 +1,6 @@
-# 🚀 RAG对话系统
+# RAG对话系统
 
-<div align="center">
-<a href="https://github.com/RMA-MUN/LangChain-RAG-FastAPI-Service/stargazers">
-  <img src="https://img.shields.io/github/stars/RMA-MUN/LangChain-RAG-FastAPI-Service?style=flat-square&label=Stars&color=orange" alt="Stars">
-</a>
-<a href="https://github.com/RMA-MUN/LangChain-RAG-FastAPI-Service/network/members">
-  <img src="https://img.shields.io/github/forks/RMA-MUN/LangChain-RAG-FastAPI-Service?style=flat-square&label=Forks&color=green" alt="Forks">
-</a>
-  <img src="https://img.shields.io/badge/python-v3.12.4-blue.svg" alt="System">
-</div>
-
-## 📋 目录
+##  目录
 
 - [项目简介](#项目简介)
 - [核心特性](#核心特性)
@@ -21,11 +11,8 @@
 - [项目结构](#项目结构)
 - [API 文档](#api文档)
 - [配置说明](#配置说明)
-- [部署指南](#部署指南)
 - [开发指南](#开发指南)
 - [故障排除](#故障排除)
-- [文档](#文档)
-- [联系方式](#联系方式)
 
 ## 项目简介
 
@@ -298,10 +285,6 @@ separators: ["\n\n", "\n", "。", "！", "？", "!", "?", " ", ""]
 - **[API 文档](./DjangoUserService/api.md)**：详细的用户服务 API 文档
 - **[交互式文档](http://localhost:8001/api/)**：启动服务后访问用户服务 API 文档
 
-## 部署指南
-
-详细的部署说明请参考：[部署指南](./docs/deployment.md)
-
 ## 开发指南
 
 ### 代码结构说明
@@ -327,27 +310,3 @@ separators: ["\n\n", "\n", "。", "！", "？", "!", "?", " ", ""]
 ## 故障排除
 
 详细的故障排除指南请参考：[故障排除](./docs/troubleshooting.md)
-
-## 文档
-
-项目文档位于 `docs/` 目录：
-
-- **[ModelScope 模型配置](./docs/huggingface_model.md)**：详细的模型下载和配置说明
-- **[故障排除](./docs/troubleshooting.md)**：常见问题和解决方案
-- **[API 文档](./backend/api.md)**：后端 API 接口文档
-- **[用户服务 API](./DjangoUserService/api.md)**：用户服务 API 文档
-
-## Star History
-
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/chart?repos=RMA-MUN/LangChain-RAG-FastAPI-Service&type=date&theme=dark&legend=top-left" />
-  <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/chart?repos=RMA-MUN/LangChain-RAG-FastAPI-Service&type=date&legend=top-left" />
-  <img alt="Star History Chart" src="https://api.star-history.com/chart?repos=RMA-MUN/LangChain-RAG-FastAPI-Service&type=date&legend=top-left" />
-</picture>
-
-## 联系方式
-
-如有任何问题或建议，欢迎在 GitHub 提交 issues 或联系作者：
-
-- Email: n3032747608@163.com
-- QQ: 3032747608
